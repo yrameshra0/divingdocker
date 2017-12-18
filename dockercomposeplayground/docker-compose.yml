@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+    drupal:
+       image: drupal:8
+       ports:
+         - '8080:80'
+       volumes:
+         - drupalsites:/var/www/html/sites
+    postgres:
+       image: postgres:9.6.2
+       environment:
+          POSTGRES_PASSWORD: psqlpassword962
+volumes:
+   drupalsites:
+   
