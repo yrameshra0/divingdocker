@@ -2,7 +2,7 @@
 
 We want to make a docker swarm ecosystem from bare metals:
 
-For the sake of completing this learning exercise ended up creating a domain with 4trial.net and provisioned the name servers for the domain in AWS Route53 attaching the Alias record towards and application load balancer.
+For the sake of completing this learning exercise ended up creating a domain with _4trial.net_ and provisioned the name servers for the domain in _AWS Route53_ attaching the _Alias record_ towards an application load balancer.
 
 The whole purpose of the Applicatio Load Balancer was to make sure that we have single Docker Swarm managing multiple enviornments for us as happens in general service architecture, the end result looks like below:
 
@@ -11,11 +11,11 @@ The whole purpose of the Applicatio Load Balancer was to make sure that we have 
                     |     DEV       |
                     |      nA       |
                     |      nB       |
-         /test------+      nC       |
+         *.test-----+      nC       |
            |        |---------------|
-ALB -----/dev-------+ DOCKER SWARM  |
+ALB -----*.dev------+ DOCKER SWARM  |
            |        |---------------|
-         /training--+ TEST   TRAIN  |
+         *.training-+ TEST   TRAIN  |
                     |  nD     nG    |
                     |  nE     nH    |
                     |  nF     nF    |
