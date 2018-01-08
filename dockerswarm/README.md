@@ -13,7 +13,7 @@ The whole purpose of the Applicatio Load Balancer was to make sure that we have 
                     |      nB       |
          /test------+      nC       |
            |        |---------------|
-ALB -----/dev-------+ DOCKER SWARM	|
+ALB -----/dev-------+ DOCKER SWARM  |
            |        |---------------|
          /training--+ TEST   TRAIN  |
                     |  nD     nG    |
