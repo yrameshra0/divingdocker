@@ -1,0 +1,87 @@
+version: "3"
+services:
+    nginx:
+      image: yrameshrao/nginx:latest
+      ports:
+        - "11000:80"
+      networks:
+        - testing
+
+    healthcheck:
+      image: yrameshrao/dockerhealthcheck:latest
+      networks:
+        - testing
+
+    redis:
+      image: redis:alpine
+      ports:
+        - "6379"
+      networks:
+        - testing
+      deploy:
+        replicas: 1
+        update_config:
+          parallelism: 2
+          delay: 10s
+        restart_policy:
+          condition: on-failure
+    
+    db:
+      image: postgres:9.4
+      volumes:
+        - db-data:/var/lib/postgresql/data
+      networks:
+        - testing
+    
+    vote:
+      image: dockersamples/examplevotingapp_vote:before
+      networks:
+        - testing
+      depends_on:
+        - redis
+      deploy:
+        replicas: 2
+        update_config:
+          parallelism: 2
+          delay: 10s
+        restart_policy:
+          condition: on-failure
+
+    result:
+      image: dockersamples/examplevotingapp_result:before
+      networks:
+        - testing
+      depends_on:
+        - db
+      deploy:
+        replicas: 1
+        update_config:
+          parallelism: 2
+          delay: 10s
+        restart_policy:
+          condition: on-failure
+    
+    worker:
+      image:  dockersamples/examplevotingapp_worker
+      networks:
+        - testing
+    
+    visualizer:
+      image: dockersamples/visualizer
+      stop_grace_period: 1m30s
+      deploy:
+        placement:
+          constraints:
+            - node.role == manager
+      networks:
+        - testing
+      volumes:
+        - "/var/run/docker.sock:/var/run/docker.sock"
+
+networks:
+  testing:
+
+volumes:
+  db-data:      
+          
+
