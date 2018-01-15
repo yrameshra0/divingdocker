@@ -1,14 +1,14 @@
 resource "aws_instance" "control_hub" {
   ami                    = "ami-f3e5aa9c"
   instance_type          = "t2.micro"
-  key_name               = "cloud_den"
+  key_name               = "<your_key_name>"
   subnet_id              = "${aws_subnet.public_sn_1.id}"
   vpc_security_group_ids = ["${aws_security_group.public_limited_sg.id}"]
 
   # Key file copy
   provisioner "file" {
-    source      = "cloud_den.pem"
-    destination = "/tmp/cloud_den.pem"
+    source      = "<your_key_name>.pem"
+    destination = "/tmp/<your_key_name>.pem"
   }
 
   # Ansible files copy
@@ -32,21 +32,21 @@ resource "aws_instance" "control_hub" {
       "sudo apt-get install ansible -y",
       "sudo apt-get install python-pip -y",
       "sudo pip install 'boto==2.46.1'",
-      "sudo chmod 400 /tmp/cloud_den.pem",
-      "sudo mv /tmp/cloud_den.pem /home/ubuntu/",
+      "sudo chmod 400 /tmp/<your_key_name>.pem",
+      "sudo mv /tmp/<your_key_name>.pem /home/ubuntu/",
       "sudo mv /tmp/ansible /home/ubuntu",
       "sudo mv /tmp/compose /home/ubuntu",
       "sudo mv /home/ubuntu/ansible/dynamic_inventory/ec2.py /etc/ansible/hosts",
       "sudo chmod +x /etc/ansible/hosts",
       "sudo mv /home/ubuntu/ansible/dynamic_inventory/ec2.ini /etc/ansible/",
       "export ANSIBLE_HOST_KEY_CHECKING=False",
-      "ansible-playbook ./ansible/docker_swarm_setup.yml --private-key cloud_den.pem",
+      "ansible-playbook ./ansible/docker_swarm_setup.yml --private-key <your_key_name>.pem",
     ]
   }
 
   connection {
     user        = "ubuntu"
-    private_key = "${file("cloud_den.pem")}"
+    private_key = "${file("<your_key_name>.pem")}"
   }
 
   tags {
@@ -61,7 +61,7 @@ output "ip" {
 resource "aws_instance" "minions_1a" {
   ami                    = "ami-f3e5aa9c"
   instance_type          = "t2.micro"
-  key_name               = "cloud_den"
+  key_name               = "<your_key_name>"
   count                  = 2
   subnet_id              = "${aws_subnet.private_sn_1.id}"
   vpc_security_group_ids = ["${aws_security_group.private_dmz_sg.id}"]
@@ -74,7 +74,7 @@ resource "aws_instance" "minions_1a" {
 resource "aws_instance" "minions_1b" {
   ami                    = "ami-f3e5aa9c"
   instance_type          = "t2.micro"
-  key_name               = "cloud_den"
+  key_name               = "<your_key_name>"
   count                  = 2
   subnet_id              = "${aws_subnet.private_sn_2.id}"
   vpc_security_group_ids = ["${aws_security_group.private_dmz_sg.id}"]
